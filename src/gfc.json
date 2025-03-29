@@ -3,8 +3,8 @@
 	"pages": 5,
 	"keyword": "全新iqooz9",
 	"results_show": 10,
-	"included": ["8", "256"],
-	"notincluded": ["z9x", "turbo", "iqooz9t"],
+	"included": "8,256",
+	"notincluded": "z9x,turbo,iqooz9t",
 	"is_upper": true,
 	"min_price": null,
 	"max_price": null
