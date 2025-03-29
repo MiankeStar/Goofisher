@@ -1,30 +1,41 @@
 from DrissionPage import ChromiumPage
+from DrissionPage._configs.chromium_options import ChromiumOptions
 from itertools import islice
 from pathlib import Path
 import json
 import time
+import os
 
+# 初始化变量
+nowtime = time.time()
+config = dict()
+products = dict()
+#读取配置
+with open('../gfc.json', 'r', encoding='utf-8') as gfc:
+    config = json.load(gfc)
+included = config['included']
+notincluded = config['notincluded']
+is_upper = config['is_upper']
+results_show = config['results_show']
+keyword = config['keyword']
+pages = config['pages']
+min_price = config['min_price']
+max_price = config['max_price']
 # 创建 ChromiumPage 实例
-driss = ChromiumPage()
-try:
-    # 初始化变量
-    nowtime = time.time()
-    config = dict()
-    products = dict()
-    #读取配置
-    with open('../gfc.json', 'r', encoding='utf-8') as gfc:
-        config = json.load(gfc)
-    included = config['included']
-    notincluded = config['notincluded']
-    results_show = config['results_show']
-    keyword = config['keyword']
-    pages = config['pages']
-    min_price = config['min_price']
-    max_price = config['max_price']
+browser_path = config.get('browser_path', None)
+if browser_path and not os.path.exists(browser_path):
+    print('请配置正确浏览器路径。')
+    exit()
+options = ChromiumOptions()
+options.set_browser_path(browser_path)
+driss = ChromiumPage(options)
 
+try:
     #默认值
     keyword = '.' if not keyword else keyword
     pages = 1 if not pages else pages
+    included = [i.upper() for i in included] if is_upper else included
+    notincluded = [ni.upper() for ni in notincluded] if is_upper else notincluded
 
     # 打开网页
     print('打开闲鱼官网。')
@@ -72,10 +83,11 @@ try:
                     '商品链接': product_url
                 }
                 
-                tempt = product_info['标题']
+                stempt = product_info['标题']
+                tempt = stempt.upper() if is_upper else stempt
                 price = float(product_info['价格'])
                 if (not included or any(word in tempt for word in included)) and (not notincluded or not any(word in tempt for word in notincluded)) and ((price >= (0 if not min_price else min_price)) and (price <= (price if not max_price else max_price))):
-                    products[tempt] = (price, shop_name)
+                    products[stempt] = (price, shop_name)
 
         except (KeyError, ValueError) as e:
             print(f"处理数据时出错: {e}")
@@ -102,3 +114,5 @@ try:
     print(f'爬取完毕，本次耗时{int((time.time() - nowtime) * 1000)}毫秒。')
 except Exception as e:
     print(f"发生未知错误: {e}")
+finally:
+    driss.quit()
