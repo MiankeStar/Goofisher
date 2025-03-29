@@ -2,7 +2,7 @@
 
 ## 方便
 
-**若不想繁琐的使用python，则可以前往releases界面下载图形化可执行文件**
+**若不想繁琐的使用python，则可以前往[Releases](https://github.com/MiankeStar/Goofisher/releases)界面下载图形化可执行文件**
 
 ## 环境准备
 
