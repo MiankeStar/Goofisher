@@ -13,8 +13,8 @@ products = dict()
 #读取配置
 with open('../gfc.json', 'r', encoding='utf-8') as gfc:
     config = json.load(gfc)
-included = config['included']
-notincluded = config['notincluded']
+included = config['included'].split(',')
+notincluded = config['notincluded'].split(',')
 is_upper = config['is_upper']
 results_show = config['results_show']
 keyword = config['keyword']
