@@ -380,15 +380,19 @@ def display_results(products, keyword, results_show, signals, start_time):
         return
 
     prices = [price for price, _ in products.values()]
+    res_min_price = min(prices)
+    res_max_price = max(prices)
     avg_price = sum(prices) / len(prices)
     time_cost = int((time.time() - start_time) * 1000)
 
     result_text = [
         f"【{keyword}】市场分析结果：",
+        f"▪ 最低价格：￥{res_min_price:.2f}",
+        f"▪ 最高价格：￥{res_max_price:.2f}",
         f"▪ 平均价格：¥{avg_price:.2f}",
         f"▪ 有效商品数：{len(products)}",
         f"▪ 耗时：{time_cost}ms",
-        "\n前{}个结果：".format(min(results_show, len(products)))
+        f"\n前{min(results_show, len(products))}个结果："
     ]
 
     for idx, (title, (price, shop)) in enumerate(islice(products.items(), results_show), 1):
