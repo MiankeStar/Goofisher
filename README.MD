@@ -31,9 +31,9 @@
 | `included` | 必须包含的关键词（逗号分隔） | "" | `string` | "8,256" |
 | `notincluded` | 必须不包含的关键词（逗号分隔） | "" | `string` | "长续航版,turbo+" |
 | `all_check` | 必须包含全部关键词 | 是 | `boolean` | true |
-| `is_upper` | 是否区分大小写 | 是 | boolean | true |
-| `min_price` | 最小价格 | 0 | float | 100 |
-| `max_price` | 最大价格 | 与商品同价 | float | 999 |
+| `is_upper` | 是否区分大小写 | 是 | `boolean` | true |
+| `min_price` | 最小价格 | 0 | `float` | 100 |
+| `max_price` | 最大价格 | 与商品同价 | `float` | 999 |
 
 **注意**：
 - 除`browser_path`外其余参数设置为`null`将使用默认值
