@@ -6,16 +6,22 @@ from pathlib import Path
 import json
 import time
 import os
+import sys
 
 # 初始化变量
+args = sys.argv
+output_path = str()
+if len(args) >= 2:
+    output_path = args[1]
 nowtime = time.time()
 config = dict()
 products = dict()
 #读取配置
 with open('../gfc.json', 'r', encoding='utf-8') as gfc:
     config = json.load(gfc)
-included = config['included'].split(',')
-notincluded = config['notincluded'].split(',')
+included = config['included']
+notincluded = config['notincluded']
+all_check = config['all_check']
 is_upper = config['is_upper']
 results_show = config['results_show']
 keyword = config['keyword']
@@ -35,8 +41,8 @@ try:
     #默认值
     keyword = '.' if not keyword else keyword
     pages = 1 if not pages else pages
-    included = [i.upper() for i in included] if is_upper else included
-    notincluded = [ni.upper() for ni in notincluded] if is_upper else notincluded
+    included = None if not included else ''.join([i.upper() for i in included]).split(',') if is_upper else included.split(',')
+    notincluded = None if not notincluded else ''.join([ni.upper() for ni in notincluded]).split(',') if is_upper else notincluded.split(',')
 
     # 打开网页
     print('打开闲鱼官网。')
@@ -83,13 +89,15 @@ try:
                     '价格': click_params['price'],
                     '商品链接': product_url
                 }
-                
                 stempt = product_info['标题']
                 tempt = stempt.upper() if is_upper else stempt
                 price = float(product_info['价格'])
-                if (not included or any(word in tempt for word in included)) and (not notincluded or not any(word in tempt for word in notincluded)) and ((price >= (0 if not min_price else min_price)) and (price <= (price if not max_price else max_price))):
+                icd = (False, ) if not included else (word in tempt for word in included)
+                nicd = (False, ) if not notincluded else (word in tempt for word in notincluded)
+                judgei = all(icd) if all_check else any(icd)
+                judgeni = not (all(nicd) if all_check else any(nicd))
+                if (judgei and judgeni) and ((0 if not min_price else min_price) <= price <= (price if not max_price else max_price)):
                     products[stempt] = (price, shop_name)
-
         except (KeyError, ValueError) as e:
             print(f"处理数据时出错: {e}")
 
@@ -104,12 +112,24 @@ try:
     items = products.items()
     final_prices = {v[0] for k, v in items}
     num_products = len(products)
-    results_show = num_products if not results_show else results_show
+    results_show = num_products if results_show >= num_products else results_show
     if final_prices:
         average_price = round(sum(final_prices) / len(final_prices), 2)
-        print(f"商品“{keyword}”市场均价为{average_price}，参考结果有{num_products}个，以下为前{results_show}个参考结果的标题：")
-        for i, (k, v) in enumerate(islice(items, results_show)):
-            print(f'第{i + 1}个结果：{k}（价格：{v[0]}，店铺名：{v[1]}）')
+        min_price = min(final_prices)
+        max_price = max(final_prices)
+        info = f"商品“{keyword}”结果：\n最低价——{min_price}￥\n最高价——{max_price}￥\n均价——{average_price}￥\n参考结果有{num_products}个，以下为前{results_show}个参考结果的标题："
+        if output_path:
+            target = list()
+            target.append(info)
+            for i, (k, v) in enumerate(islice(items, results_show)):
+                target.append(f'第{i + 1}个结果：{k}（价格：{v[0]}￥，店铺名：{v[1]}）')
+            with open(output_path, 'w', encoding='utf-8') as w:
+                w.write('\n'.join(target))
+            print(f'结果已保存至“{output_path}”文件。')
+        else:
+            print(info)
+            for i, (k, v) in enumerate(islice(items, results_show)):
+                print(f'第{i + 1}个结果：{k}（价格：{v[0]}￥，店铺名：{v[1]}）')
     else:
         print("未找到符合条件的商品。")
     print(f'爬取完毕，本次耗时{int((time.time() - nowtime) * 1000)}毫秒。')

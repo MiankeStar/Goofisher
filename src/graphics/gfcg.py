@@ -31,7 +31,7 @@ class GoofisherGUI(QWidget):
 
     @staticmethod
     def resources_path(relative_path):
-        if hasattr(sys, '_MEIPASS'):
+        if hasattr(sys, "_MEIPASS"):
             base_path = sys._MEIPASS
         else:
             base_path = os.path.abspath(".")
@@ -56,7 +56,8 @@ class GoofisherGUI(QWidget):
         self.notincluded = QLineEdit()
         self.min_price = QLineEdit()
         self.max_price = QLineEdit()
-        self.is_upper = QCheckBox("启用严格匹配")
+        self.is_upper = QCheckBox("区分大小写")
+        self.all_check = QCheckBox("包含所有关键字")
         self.logger = QTextEdit()
         self.progress = QProgressBar()
         self.start_btn = QPushButton("开始爬取")
@@ -67,6 +68,7 @@ class GoofisherGUI(QWidget):
 
         # 初始化状态
         self.is_upper.setChecked(True)
+        self.all_check.setChecked(True)
         self.progress.setRange(0, 1)
         self.progress.setValue(0)
         self.progress.setFormat("当前进度：%v/%m")
@@ -88,13 +90,17 @@ class GoofisherGUI(QWidget):
     def create_layouts(self):
         main_layout = QVBoxLayout()
         header_btns = QHBoxLayout()
+        checkboxes_btns = QHBoxLayout()
+
         header_btns.addWidget(self.start_btn)
         header_btns.addWidget(self.clear_btn)
         header_btns.addWidget(self.load_btn)
 
         main_layout.addLayout(header_btns)
         main_layout.addWidget(QLabel("匹配设置"))
-        main_layout.addWidget(self.is_upper)
+        checkboxes_btns.addWidget(self.is_upper)
+        checkboxes_btns.addWidget(self.all_check)
+        main_layout.addLayout(checkboxes_btns)
 
         main_layout.addWidget(QLabel("基本参数"))
         main_layout.addWidget(self.pages)
@@ -139,7 +145,7 @@ class GoofisherGUI(QWidget):
         self.load_btn.setStyleSheet(btn_style)
 
         # 复选框美化
-        self.is_upper.setStyleSheet("""
+        checkboxes_style = """
         QCheckBox {
             font-size: 14px;
             color: #616161;
@@ -156,7 +162,9 @@ class GoofisherGUI(QWidget):
             background-color: #4CAF50;
             border: 2px solid #388E3C;
         }
-        """)
+        """
+        self.is_upper.setStyleSheet(checkboxes_style)
+        self.all_check.setStyleSheet(checkboxes_style)
 
         # 输入框通用样式
         self.setStyleSheet("""
@@ -195,24 +203,25 @@ class GoofisherGUI(QWidget):
         try:
             path, _ = QFileDialog.getOpenFileName(self, "选择配置文件", "", "JSON Files (*.json)")
             if path:
-                with open(path, 'r', encoding='utf-8') as f:
+                with open(path, "r", encoding="utf-8") as f:
                     config = json.load(f)
 
                 # 映射字段到组件
                 field_map = {
-                    'browser_path': self.browser_path,
-                    'pages': self.pages,
-                    'keyword': self.keyword,
-                    'results_show': self.results_show,
-                    'included': self.included,
-                    'notincluded': self.notincluded,
-                    'min_price': self.min_price,
-                    'max_price': self.max_price,
-                    'is_upper': self.is_upper
+                    "browser_path": self.browser_path,
+                    "pages": self.pages,
+                    "keyword": self.keyword,
+                    "results_show": self.results_show,
+                    "included": self.included,
+                    "notincluded": self.notincluded,
+                    "min_price": self.min_price,
+                    "max_price": self.max_price,
+                    "is_upper": self.is_upper,
+                    "all_check": self.all_check
                 }
 
                 for key, widget in field_map.items():
-                    value = config.get(key, '')
+                    value = config.get(key, "")
                     if isinstance(widget, QLineEdit):
                         widget.setText(str(value))
                     elif isinstance(widget, QCheckBox):
@@ -238,7 +247,8 @@ class GoofisherGUI(QWidget):
             "notincluded": self.notincluded,
             "is_upper": self.is_upper.isChecked(),
             "min_price": self.min_price.text(),
-            "max_price": self.max_price.text()
+            "max_price": self.max_price.text(),
+            "all_check": self.all_check.isChecked()
         }
         thread = threading.Thread(
             target=catch,
@@ -278,7 +288,7 @@ def catch(config, signals):
         keyword = config["keyword"] or "python"
         results_show = validate_input(config["results_show"], 1)
         min_price = validate_input(config["min_price"], 0.0, float)
-        max_price = validate_input(config["max_price"], float('inf'), float)
+        max_price = validate_input(config["max_price"], float("inf"), float)
 
         # 关键词处理
         included = [w.strip() for w in config["included"].text().split(",") if w.strip()]
@@ -286,6 +296,7 @@ def catch(config, signals):
         case_func = str.upper if config["is_upper"] else lambda x: x
         included = list(map(case_func, included))
         notincluded = list(map(case_func, notincluded))
+        all_check = True
 
         signals.set_progress_range.emit(0, pages)
 
@@ -307,14 +318,14 @@ def catch(config, signals):
             try:
                 result_list = response.response.body["data"]["resultList"]
                 process_items(result_list, products, included, notincluded,
-                            min_price, max_price, case_func, signals)
+                            min_price, max_price, case_func, signals, all_check)
             except Exception as e:
                 signals.update_log.emit(f"页面处理错误: {str(e)}")
 
             # 翻页操作
             if current_page < pages:
                 try:
-                    driss.ele('xpath://*[@id="content"]/div[1]/div[4]/div/div[1]/button[2]').check()
+                    driss.ele("xpath://*[@id=\"content\"]/div[1]/div[4]/div/div[1]/button[2]").check()
                 except Exception as e:
                     signals.update_log.emit(f"翻页失败: {str(e)}")
                     break
@@ -324,13 +335,13 @@ def catch(config, signals):
     except Exception as e:
         signals.update_log.emit(f"爬虫异常: {str(e)}")
     finally:
-        if 'driss' in locals():
+        if "driss" in locals():
             driss.quit()
         signals.set_button_status.emit(True)
 
 
 def process_items(result_list, products, included, notincluded,
-                min_price, max_price, case_func, signals):
+                min_price, max_price, case_func, signals, all_check):
     for item in result_list:
         try:
             item_data = item["data"]["item"]["main"]
@@ -341,10 +352,14 @@ def process_items(result_list, products, included, notincluded,
             price = float(click_params["price"])
             processed_title = case_func(title)
 
+            icd = (False, ) if not included else (word in processed_title for word in notincluded)
+            nicd = (False, ) if not notincluded else (word in processed_title for word in notincluded)
+            icd = all(icd) if all_check else any(icd)
+            nicd = all(nicd) if all_check else any(nicd)
             # 关键词过滤
-            if included and not any(word in processed_title for word in included):
+            if included and not icd:
                 continue
-            if notincluded and any(word in processed_title for word in notincluded):
+            if notincluded and nicd:
                 continue
 
             # 价格过滤

@@ -1,10 +1,11 @@
 {
 	"browser_path": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
-	"pages": 5,
-	"keyword": "全新iqooz9",
+	"pages": 1,
+	"keyword": "全新红米14R",
 	"results_show": 10,
-	"included": "8,256",
-	"notincluded": "z9x,turbo,iqooz9t",
+	"included": "4+128,全新,4gb,4g",
+	"notincluded": "",
+	"all_check": false,
 	"is_upper": true,
 	"min_price": null,
 	"max_price": null
