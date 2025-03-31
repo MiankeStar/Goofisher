@@ -6,7 +6,7 @@
 	"included": "4+128,全新,4gb,4g",
 	"notincluded": "",
 	"all_check": false,
-	"is_upper": true,
+	"is_upper": null,
 	"min_price": null,
 	"max_price": null
 }

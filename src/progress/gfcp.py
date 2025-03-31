@@ -43,6 +43,8 @@ try:
     pages = 1 if not pages else pages
     included = None if not included else ''.join([i.upper() for i in included]).split(',') if is_upper else included.split(',')
     notincluded = None if not notincluded else ''.join([ni.upper() for ni in notincluded]).split(',') if is_upper else notincluded.split(',')
+    is_upper = bool(is_upper)
+    all_check = bool(all_check)
 
     # 打开网页
     print('打开闲鱼官网。')

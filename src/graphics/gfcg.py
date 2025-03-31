@@ -293,10 +293,10 @@ def catch(config, signals):
         # 关键词处理
         included = [w.strip() for w in config["included"].text().split(",") if w.strip()]
         notincluded = [w.strip() for w in config["notincluded"].text().split(",") if w.strip()]
-        case_func = str.upper if config["is_upper"] else lambda x: x
+        case_func = str.upper if bool(config["is_upper"]) else lambda x: x
         included = list(map(case_func, included))
         notincluded = list(map(case_func, notincluded))
-        all_check = True
+        all_check = bool(config['all_check'])
 
         signals.set_progress_range.emit(0, pages)
 
