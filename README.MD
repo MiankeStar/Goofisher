@@ -22,21 +22,21 @@
 
 ## gfc.json配置文件说明
 
-| 参数名 | 说明 | 默认值 |
-|--------|------|--------|
-| `browser_path`| 浏览器可执行文件路径 | - |
-| `pages` | 爬取的页数 | 终端全部/图形化1项 |
-| `keyword` | 搜索关键词 | "python" |
-| `results_show` | 最大显示结果数 | 全部显示 |
-| `included` | 必须包含的关键词 | - |
-| `notincluded` | 必须不包含的关键词 | - |
-| `all_check` | 必须包含全部关键词 | 是 |
-| `is_upper` | 是否区分大小写 | 是 |
-| `min_price` | 最小价格 | 0 |
-| `max_price` | 最大价格 | 与商品同价 |
+| 参数名 | 说明 | 默认值 | 类型 | 例子 |
+|--------|------|--------|------|------|
+| `browser_path`| 浏览器可执行文件路径 | - | `string` | C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe |
+| `pages` | 爬取的页数 | 1 | `int` | 10 |
+| `keyword` | 搜索关键词 | "python" | `string` | "iqooz9turbo" |
+| `results_show` | 最大显示结果数 | 终端版全部/图形化版1项 | `int` | 10 |
+| `included` | 必须包含的关键词（逗号分隔） | "" | `string` | "8,256" |
+| `notincluded` | 必须不包含的关键词（逗号分隔） | "" | `string` | "长续航版,turbo+" |
+| `all_check` | 必须包含全部关键词 | 是 | `boolean` | true |
+| `is_upper` | 是否区分大小写 | 是 | boolean | true |
+| `min_price` | 最小价格 | 0 | float | 100 |
+| `max_price` | 最大价格 | 与商品同价 | float | 999 |
 
 **注意**：
-- 任何参数设置为`null`将使用默认值
+- 除`browser_path`外其余参数设置为`null`将使用默认值
 - 配置项说明清晰明确，便于理解和使用
 
 ## 技术说明
