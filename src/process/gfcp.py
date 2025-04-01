@@ -1,3 +1,4 @@
+from tqdm import tqdm
 from DrissionPage import ChromiumPage
 from DrissionPage._configs.chromium_options import ChromiumOptions
 from itertools import islice
@@ -60,7 +61,7 @@ try:
     # 开始监听网络请求
     driss.listen.start('h5/mtop.taobao.idlemtopsearch.pc.search/1.0')
 
-    for _ in range(pages):
+    for _ in tqdm(range(pages), desc='获取页面结果'):
         # 等待网络请求响应
         response = driss.listen.wait()
         try:

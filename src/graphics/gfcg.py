@@ -352,14 +352,14 @@ def process_items(result_list, products, included, notincluded,
             price = float(click_params["price"])
             processed_title = case_func(title)
 
-            icd = (False, ) if not included else (word in processed_title for word in notincluded)
+            icd = (False, ) if not included else (word in processed_title for word in included)
             nicd = (False, ) if not notincluded else (word in processed_title for word in notincluded)
             icd = all(icd) if all_check else any(icd)
             nicd = all(nicd) if all_check else any(nicd)
             # 关键词过滤
-            if included and not icd:
+            if not icd:
                 continue
-            if notincluded and nicd:
+            if nicd:
                 continue
 
             # 价格过滤
@@ -379,16 +379,20 @@ def display_results(products, keyword, results_show, signals, start_time):
         signals.update_log.emit("未找到符合条件的结果")
         return
 
-    prices = [price for price, _ in products.values()]
+    products_values = products.values()
+    prices = [price for price, shop in products_values]
+    shops = [shop for price, shop in products_values]
     res_min_price = min(prices)
     res_max_price = max(prices)
+    res_min_shop = shops[prices.index(res_min_price)]
+    res_max_shop = shops[prices.index(res_max_price)]
     avg_price = sum(prices) / len(prices)
     time_cost = int((time.time() - start_time) * 1000)
 
     result_text = [
         f"【{keyword}】市场分析结果：",
-        f"▪ 最低价格：￥{res_min_price:.2f}",
-        f"▪ 最高价格：￥{res_max_price:.2f}",
+        f"▪ 最低价格：[{res_min_shop}] - ￥{res_min_price:.2f}",
+        f"▪ 最高价格：[{res_max_shop}] - ￥{res_max_price:.2f}",
         f"▪ 平均价格：¥{avg_price:.2f}",
         f"▪ 有效商品数：{len(products)}",
         f"▪ 耗时：{time_cost}ms",

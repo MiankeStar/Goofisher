@@ -12,7 +12,7 @@
 
 2. ​**Python库依赖**：
    - 必须安装`DrissionPage`库：`pip install DrissionPage`
-   - 如使用progress版本，需进度条功能，安装`tqdm`库：`pip install tqdm`，common请忽略
+   - 如使用process版本，需进度条功能，安装`tqdm`库：`pip install tqdm`，common请忽略
 
 ## 初始配置
 
@@ -39,14 +39,11 @@
 - 除`browser_path`外其余参数设置为`null`将使用默认值
 - 配置项说明清晰明确，便于理解和使用
 
-**额外参数**
-- 若想要直接将结果输出至文件，则只需`python gfcp.py o.txt`，这样就能将结果保存至`o.txt`文件
-
 ## 技术说明
 
 1. ​**进度条功能**：
    - `tqdm`提供直观的进度显示
-   - 仅progress版需要此依赖，common版不需要
+   - 仅process版需要此依赖，common版不需要
 
 2. **图形化界面**：
    - 图形化界面基于`PyQt6`开发，若需自己改进请记得安装PyQt6依赖库

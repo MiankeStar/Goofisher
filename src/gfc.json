@@ -1,12 +1,12 @@
 {
 	"browser_path": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
-	"pages": 1,
-	"keyword": "全新红米14R",
+	"pages": 5,
+	"keyword": "quest3",
 	"results_show": 10,
-	"included": "4+128,全新,4gb,4g",
+	"included": "128",
 	"notincluded": "",
 	"all_check": false,
-	"is_upper": null,
-	"min_price": null,
-	"max_price": null
+	"is_upper": true,
+	"min_price": 500,
+	"max_price": 3000
 }
