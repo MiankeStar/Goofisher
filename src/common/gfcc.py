@@ -93,11 +93,11 @@ try:
                 stempt = product_info['标题']
                 tempt = stempt.upper() if is_upper else stempt
                 price = float(product_info['价格'])
-                icd = (False, ) if not included else (word in tempt for word in included)
+                icd = (True, ) if not included else (word in tempt for word in included)
                 nicd = (False, ) if not notincluded else (word in tempt for word in notincluded)
                 judgei = all(icd) if all_check else any(icd)
                 judgeni = not (all(nicd) if all_check else any(nicd))
-                if (judgei and judgeni) and ((0 if not min_price else min_price) <= price <= (price if not max_price else max_price)):
+                if (judgei and not judgeni) and ((0 if not min_price else min_price) <= price <= (price if not max_price else max_price)):
                     products[stempt] = (price, shop_name)
         except (KeyError, ValueError) as e:
             print(f"处理数据时出错: {e}")

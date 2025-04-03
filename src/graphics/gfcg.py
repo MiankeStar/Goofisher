@@ -352,7 +352,7 @@ def process_items(result_list, products, included, notincluded,
             price = float(click_params["price"])
             processed_title = case_func(title)
 
-            icd = (False, ) if not included else (word in processed_title for word in included)
+            icd = (True, ) if not included else (word in processed_title for word in included)
             nicd = (False, ) if not notincluded else (word in processed_title for word in notincluded)
             icd = all(icd) if all_check else any(icd)
             nicd = all(nicd) if all_check else any(nicd)

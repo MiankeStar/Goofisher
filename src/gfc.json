@@ -1,12 +1,12 @@
 {
 	"browser_path": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
 	"pages": 5,
-	"keyword": "quest3",
+	"keyword": "quest3s",
 	"results_show": 10,
-	"included": "128",
+	"included": "",
 	"notincluded": "",
-	"all_check": false,
+	"all_check": true,
 	"is_upper": true,
-	"min_price": 500,
-	"max_price": 3000
+	"min_price": null,
+	"max_price": null
 }
