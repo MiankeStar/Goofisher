@@ -291,8 +291,8 @@ def catch(config, signals):
         max_price = validate_input(config["max_price"], float("inf"), float)
 
         # 关键词处理
-        included = [w.strip() for w in config["included"].text().split(",") if w.strip()]
-        notincluded = [w.strip() for w in config["notincluded"].text().split(",") if w.strip()]
+        included = [w.strip() for w in config["included"].text().replace("，", ",").split(",") if w.strip()]
+        notincluded = [w.strip() for w in config["notincluded"].text().replace("，", ",").split(",") if w.strip()]
         case_func = str.upper if bool(config["is_upper"]) else lambda x: x
         included = list(map(case_func, included))
         notincluded = list(map(case_func, notincluded))

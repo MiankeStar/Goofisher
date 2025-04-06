@@ -1,12 +1,12 @@
 {
 	"browser_path": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
 	"pages": 5,
-	"keyword": "quest3s",
+	"keyword": "王国之泪",
 	"results_show": 10,
-	"included": "",
+	"included": "港",
 	"notincluded": "",
 	"all_check": true,
 	"is_upper": true,
-	"min_price": null,
-	"max_price": null
+	"min_price": 180,
+	"max_price": 220
 }
