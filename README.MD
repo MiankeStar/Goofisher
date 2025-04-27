@@ -22,8 +22,8 @@
 
 ## gfc.json配置文件说明
 
-| 参数名 |   说明   | 默认值 | 类型 | 例子 |
-|--------|----------|--------|------|------|
+| 参数名 | 说明 | 默认值 | 类型 | 例子 |
+|--------|------|--------|------|------|
 | `browser_path`| 浏览器可执行文件路径 | - | `string` | C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe |
 | `pages` | 爬取的页数 | 1 | `int` | 10 |
 | `keyword` | 搜索关键词 | "python" | `string` | "iqooz9turbo" |
