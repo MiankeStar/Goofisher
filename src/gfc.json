@@ -8,5 +8,6 @@
 	"all_check": true,
 	"is_upper": true,
 	"min_price": 180,
-	"max_price": 220
+	"max_price": 220,
+	"content_range": null
 }
