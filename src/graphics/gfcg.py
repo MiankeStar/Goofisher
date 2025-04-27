@@ -56,6 +56,7 @@ class GoofisherGUI(QWidget):
         self.notincluded = QLineEdit()
         self.min_price = QLineEdit()
         self.max_price = QLineEdit()
+        self.content_range = QLineEdit()
         self.is_upper = QCheckBox("区分大小写")
         self.all_check = QCheckBox("包含所有关键字")
         self.logger = QTextEdit()
@@ -82,6 +83,7 @@ class GoofisherGUI(QWidget):
             self.notincluded: "排除关键词（逗号分隔）",
             self.min_price: "最低价格（单位：元）",
             self.max_price: "最高价格（单位：元）",
+            self.content_range: "限制内容最大字数",
             self.logger: "操作日志..."
         }
         for widget, text in components.items():
@@ -117,6 +119,7 @@ class GoofisherGUI(QWidget):
         main_layout.addWidget(self.notincluded)
         main_layout.addWidget(self.min_price)
         main_layout.addWidget(self.max_price)
+        main_layout.addWidget(self.content_range)
 
         main_layout.addWidget(QLabel("进度状态"))
         main_layout.addWidget(self.progress)
@@ -191,6 +194,7 @@ class GoofisherGUI(QWidget):
         """)
 
     def setup_connections(self):
+        #连接槽函数
         self.clear_btn.clicked.connect(self.logger.clear)
         self.start_btn.clicked.connect(self.start_crawler)
         self.load_btn.clicked.connect(self.load_config)
@@ -216,6 +220,7 @@ class GoofisherGUI(QWidget):
                     "notincluded": self.notincluded,
                     "min_price": self.min_price,
                     "max_price": self.max_price,
+                    "content_range": self.content_range,
                     "is_upper": self.is_upper,
                     "all_check": self.all_check
                 }
@@ -248,6 +253,7 @@ class GoofisherGUI(QWidget):
             "is_upper": self.is_upper.isChecked(),
             "min_price": self.min_price.text(),
             "max_price": self.max_price.text(),
+            "content_range": self.content_range.text()
             "all_check": self.all_check.isChecked()
         }
         thread = threading.Thread(
@@ -289,6 +295,7 @@ def catch(config, signals):
         results_show = validate_input(config["results_show"], 1)
         min_price = validate_input(config["min_price"], 0.0, float)
         max_price = validate_input(config["max_price"], float("inf"), float)
+        content_range = validate_input(config["content_range"], int("inf"))
 
         # 关键词处理
         included = [w.strip() for w in config["included"].text().replace("，", ",").split(",") if w.strip()]
@@ -364,6 +371,10 @@ def process_items(result_list, products, included, notincluded,
 
             # 价格过滤
             if not (min_price <= price <= max_price):
+                continue
+                
+            #文本限制过滤
+            if not len(processed_title) <= content_range:
                 continue
 
             # 店铺信息
