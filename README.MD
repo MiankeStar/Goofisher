@@ -34,6 +34,7 @@
 | `is_upper` | 是否区分大小写 | 是 | `boolean` | true |
 | `min_price` | 最小价格 | 0 | `float` | 100 |
 | `max_price` | 最大价格 | 与商品同价/python的float最大值 | `float` | 999 |
+| `content_range` | 文本字数限制 | 无限制 | `int` | 999 |
 
 **注意**：
 - 除`browser_path`外其余参数设置为`null`将使用默认值
