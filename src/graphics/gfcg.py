@@ -253,7 +253,7 @@ class GoofisherGUI(QWidget):
             "is_upper": self.is_upper.isChecked(),
             "min_price": self.min_price.text(),
             "max_price": self.max_price.text(),
-            "content_range": self.content_range.text()
+            "content_range": self.content_range.text(),
             "all_check": self.all_check.isChecked()
         }
         thread = threading.Thread(
@@ -295,7 +295,7 @@ def catch(config, signals):
         results_show = validate_input(config["results_show"], 1)
         min_price = validate_input(config["min_price"], 0.0, float)
         max_price = validate_input(config["max_price"], float("inf"), float)
-        content_range = validate_input(config["content_range"], int("inf"))
+        content_range = validate_input(config["content_range"], sys.maxsize)
 
         # 关键词处理
         included = [w.strip() for w in config["included"].text().replace("，", ",").split(",") if w.strip()]
@@ -325,7 +325,7 @@ def catch(config, signals):
             try:
                 result_list = response.response.body["data"]["resultList"]
                 process_items(result_list, products, included, notincluded,
-                            min_price, max_price, case_func, signals, all_check)
+                            min_price, max_price, content_range, case_func, signals, all_check)
             except Exception as e:
                 signals.update_log.emit(f"页面处理错误: {str(e)}")
 
@@ -348,7 +348,7 @@ def catch(config, signals):
 
 
 def process_items(result_list, products, included, notincluded,
-                min_price, max_price, case_func, signals, all_check):
+                min_price, max_price, content_range, case_func, signals, all_check):
     for item in result_list:
         try:
             item_data = item["data"]["item"]["main"]

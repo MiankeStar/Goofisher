@@ -47,7 +47,6 @@ try:
     notincluded = None if not notincluded else "".join([ni.upper() for ni in notincluded]).split(",") if is_upper else notincluded.split(",")
     is_upper = bool(is_upper)
     all_check = bool(all_check)
-    content_range = 
 
     # 打开网页
     print("打开闲鱼官网。")
@@ -102,7 +101,7 @@ try:
                 judgei = all(icd) if all_check else any(icd)
                 judgeni = all(nicd) if all_check else any(nicd)
                 tempt_range = len(tempt)
-                if (judgei and not judgeni) and ((0 if not min_price else min_price) <= price <= (price if not max_price else max_price)) and (tempt_range <= len(content_range if not tempt_range)):
+                if (judgei and not judgeni) and ((0 if not min_price else min_price) <= price <= (price if not max_price else max_price)) and (tempt_range <= (content_range if content_range else tempt_range)):
                     products[stempt] = (price, shop_name)
         except (KeyError, ValueError) as e:
             print(f"处理数据时出错: {e}")

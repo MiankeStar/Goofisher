@@ -1,0 +1,1 @@
+pyinstaller --onefile --noconsole --add-data="icon.ico;." --icon=icon.ico gfcg.py
